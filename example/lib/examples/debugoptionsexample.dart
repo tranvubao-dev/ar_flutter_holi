@@ -1,7 +1,6 @@
 import 'package:ar_flutter_holi/managers/ar_location_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_object_manager.dart';
 import 'package:ar_flutter_holi/managers/ar_session_manager.dart';
-import 'package:
-/managers/ar_object_manager.dart';
 import 'package:ar_flutter_holi/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_holi/widgets/ar_view.dart';
 import 'package:flutter/material.dart';

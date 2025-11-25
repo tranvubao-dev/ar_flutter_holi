@@ -3,11 +3,11 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-group = "tech.graaf.franz.ar_flutter_plugin_plus"
+group = "tech.graaf.franz.ar_flutter_holi"
 version = "1.0-SNAPSHOT"
 
 android {
-    namespace = "tech.graaf.franz.ar_flutter_plugin_plus"
+    namespace = "tech.graaf.franz.ar_flutter_holi"
     compileSdk = 34
 
     defaultConfig {

@@ -1,0 +1,1 @@
+ /Users/MAC/Documents/ar_flutter_holi/ar_flutter_holi/example/.dart_tool/flutter_build/00dea5de95837d5dec2821cd8023965c/native_assets.json: 

@@ -6,7 +6,6 @@ import 'package:ar_flutter_holi/models/ar_anchor.dart';
 import 'package:ar_flutter_holi/widgets/ar_view.dart';
 import 'package:ar_flutter_holi_example/gloabl_variables.dart';
 import 'package:flutter/material.dart';
-import 'package:ar_flutter_holi/ar_flutter_holi.dart';
 import 'package:ar_flutter_holi/datatypes/config_planedetection.dart';
 import 'package:ar_flutter_holi/datatypes/node_types.dart';
 import 'package:ar_flutter_holi/datatypes/hittest_result_types.dart';

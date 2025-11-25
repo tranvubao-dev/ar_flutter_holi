@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="tech.graaf.franz.ar_flutter_plugin_plus">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="tech.graaf.franz.ar_flutter_holi">
 
   <uses-permission android:name="android.permission.CAMERA" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

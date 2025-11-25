@@ -1,4 +1,5 @@
 import 'package:ar_flutter_holi/ar_flutter_holi.dart';
+import 'package:ar_flutter_holi/ar_flutter_holi_plus.dart';
 import 'package:ar_flutter_holi_example/examples/externalmodelmanagementexample.dart';
 import 'package:ar_flutter_holi_example/examples/image_marker_tracking.dart';
 import 'package:ar_flutter_holi_example/examples/objectgesturesexample.dart';
@@ -36,7 +37,7 @@ class _MyAppState extends State<MyApp> {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      platformVersion = await ArFlutterPluginPlus.platformVersion;
+      platformVersion = await ArFlutterHoliPlus.platformVersion;
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }

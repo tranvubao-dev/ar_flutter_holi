@@ -7,3 +7,7 @@
 ## 0.0.2
 
 - Change pubspec information.
+
+## 0.0.3
+ 
+- Update android plugin 
