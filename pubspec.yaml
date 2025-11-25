@@ -1,6 +1,6 @@
 name: ar_flutter_holi
 description: Flutter Plugin for Augmented Reality experiences - Supports ARKit for iOS and ARCore for Android devices.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/tranvubao-dev/ar_flutter_holi
 repository: https://github.com/tranvubao-dev/ar_flutter_holi
 
