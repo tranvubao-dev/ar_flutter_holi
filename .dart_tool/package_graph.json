@@ -1,10 +1,10 @@
 {
   "roots": [
-    "awesome_utils"
+    "ar_flutter_holi"
   ],
   "packages": [
     {
-      "name": "awesome_utils",
+      "name": "ar_flutter_holi",
       "version": "0.0.1",
       "dependencies": [
         "flutter"
