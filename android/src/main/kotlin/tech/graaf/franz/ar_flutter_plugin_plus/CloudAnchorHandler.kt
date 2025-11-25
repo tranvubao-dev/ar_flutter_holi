@@ -1,4 +1,4 @@
-package tech.graaf.franz.ar_flutter_plugin_plus
+package tech.graaf.franz.ar_flutter_holi
 
 import com.google.ar.core.Anchor
 import com.google.ar.core.Anchor.CloudAnchorState

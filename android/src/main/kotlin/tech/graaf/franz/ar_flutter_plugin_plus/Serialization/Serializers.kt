@@ -1,4 +1,6 @@
-package tech.graaf.franz.ar_flutter_plugin_plus.Serialization
+package tech.graaf.franz.ar_flutter_holi
+
+.Serialization
 
 import com.google.ar.core.*
 import com.google.ar.sceneform.AnchorNode

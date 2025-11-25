@@ -1,10 +1,11 @@
-import 'package:ar_flutter_plugin_plus/managers/ar_location_manager.dart';
-import 'package:ar_flutter_plugin_plus/managers/ar_session_manager.dart';
-import 'package:ar_flutter_plugin_plus/managers/ar_object_manager.dart';
-import 'package:ar_flutter_plugin_plus/managers/ar_anchor_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_location_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_session_manager.dart';
+import 'package:
+/managers/ar_object_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_anchor_manager.dart';
+import 'package:ar_flutter_holi/widgets/ar_view.dart';
 import 'package:flutter/material.dart';
-import 'package:ar_flutter_plugin_plus/ar_flutter_plugin_plus.dart';
-import 'package:ar_flutter_plugin_plus/datatypes/config_planedetection.dart';
+import 'package:ar_flutter_holi/datatypes/config_planedetection.dart';
 
 class DebugOptionsWidget extends StatefulWidget {
   DebugOptionsWidget({Key? key}) : super(key: key);

@@ -1,11 +1,11 @@
 // The code in this file is adapted from Oleksandr Leuschenko' ARKit Flutter Plugin (https://github.com/olexale/arkit_flutter_plugin)
 
-import 'package:ar_flutter_plugin_plus/utils/json_converters.dart';
+import 'package:ar_flutter_holi/utils/json_converters.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'dart:math' as math;
-import 'package:ar_flutter_plugin_plus/datatypes/node_types.dart';
+import 'package:ar_flutter_holi/datatypes/node_types.dart';
 
 /// ARNode is the model class for node-tree objects.
 /// It encapsulates the position, rotations, and other transforms of a node, which define a coordinate system.
@@ -21,10 +21,17 @@ class ARNode {
     Vector3? eulerAngles,
     Matrix4? transformation,
     Map<String, dynamic>? data,
-  })  : name = name ?? UniqueKey().toString(),
-        transformNotifier = ValueNotifier(createTransformMatrix(
-            transformation, position, scale, rotation, eulerAngles)),
-        data = data ?? null;
+  }) : name = name ?? UniqueKey().toString(),
+       transformNotifier = ValueNotifier(
+         createTransformMatrix(
+           transformation,
+           position,
+           scale,
+           rotation,
+           eulerAngles,
+         ),
+       ),
+       data = data ?? null;
 
   /// Specifies the receiver's [NodeType]
   NodeType type;
@@ -55,16 +62,22 @@ class ARNode {
   Vector3 get scale => transform.matrixScale;
 
   set scale(Vector3 value) {
-    transform =
-        Matrix4.compose(position, Quaternion.fromRotation(rotation), value);
+    transform = Matrix4.compose(
+      position,
+      Quaternion.fromRotation(rotation),
+      value,
+    );
   }
 
   /// Determines the receiver's rotation.
   Matrix3 get rotation => transform.getRotation();
 
   set rotation(Matrix3 value) {
-    transform =
-        Matrix4.compose(position, Quaternion.fromRotation(value), scale);
+    transform = Matrix4.compose(
+      position,
+      Quaternion.fromRotation(value),
+      scale,
+    );
   }
 
   set rotationFromQuaternion(Quaternion value) {
@@ -97,27 +110,32 @@ class ARNode {
   static const _matrixValueNotifierConverter = MatrixValueNotifierConverter();
 
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'type': type.index,
-        'uri': uri,
-        'transformation':
-            _matrixValueNotifierConverter.toJson(transformNotifier),
-        'name': name,
-        'data': data,
-      }..removeWhere((String k, dynamic v) => v == null);
+    'type': type.index,
+    'uri': uri,
+    'transformation': _matrixValueNotifierConverter.toJson(transformNotifier),
+    'name': name,
+    'data': data,
+  }..removeWhere((String k, dynamic v) => v == null);
 
   static ARNode fromMap(Map<String, dynamic> map) {
     return ARNode(
-        type: NodeType.values[map["type"]],
-        uri: map["uri"] as String,
-        name: map["name"] as String,
-        transformation: MatrixConverter().fromJson(map["transformation"]),
-        data: Map<String, dynamic>.from(map["data"]));
+      type: NodeType.values[map["type"]],
+      uri: map["uri"] as String,
+      name: map["name"] as String,
+      transformation: MatrixConverter().fromJson(map["transformation"]),
+      data: Map<String, dynamic>.from(map["data"]),
+    );
   }
 }
 
 /// Helper function to create a Matrix4 from either a given matrix or from position, scale and rotation relative to the origin
-Matrix4 createTransformMatrix(Matrix4? origin, Vector3? position,
-    Vector3? scale, Vector4? rotation, Vector3? eulerAngles) {
+Matrix4 createTransformMatrix(
+  Matrix4? origin,
+  Vector3? position,
+  Vector3? scale,
+  Vector4? rotation,
+  Vector3? eulerAngles,
+) {
   final transform = origin ?? Matrix4.identity();
 
   if (position != null) {
@@ -125,7 +143,9 @@ Matrix4 createTransformMatrix(Matrix4? origin, Vector3? position,
   }
   if (rotation != null) {
     transform.rotate(
-        Vector3(rotation[0], rotation[1], rotation[2]), rotation[3]);
+      Vector3(rotation[0], rotation[1], rotation[2]),
+      rotation[3],
+    );
   }
   if (eulerAngles != null) {
     transform.matrixEulerAngles = eulerAngles;
@@ -163,8 +183,10 @@ extension Matrix4Extenstion on Matrix4 {
     // pitch (y-axis rotation)
     final sinp = 2 * (q.w * q.y - q.z * q.x);
     if (sinp.abs() >= 1) {
-      angles[1] =
-          _copySign(math.pi / 2, sinp); // use 90 degrees if out of range
+      angles[1] = _copySign(
+        math.pi / 2,
+        sinp,
+      ); // use 90 degrees if out of range
     } else {
       angles[1] = math.asin(sinp);
     }

@@ -1,11 +1,12 @@
 #import "ArFlutterPluginPlus.h"
-#if __has_include(<ar_flutter_plugin_plus/ar_flutter_plugin_plus-Swift.h>)
-#import <ar_flutter_plugin_plus/ar_flutter_plugin_plus-Swift.h>
+#if __has_include(<ar_flutter_holi/ar_flutter_holi
+-Swift.h>)
+#import <ar_flutter_holi/ar_flutter_holi-Swift.h>
 #else
 // Support project import fallback if the generated compatibility header
 // is not copied when this plugin is created as a library.
 // https://forums.swift.org/t/swift-static-libraries-dont-copy-generated-objective-c-header/19816
-#import "ar_flutter_plugin_plus-Swift.h"
+#import "ar_flutter_holi-Swift.h"
 #endif
 
 @implementation ArFlutterPluginPlus

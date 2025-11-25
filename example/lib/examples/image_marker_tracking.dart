@@ -1,12 +1,12 @@
-import 'package:ar_flutter_plugin_plus/datatypes/config_planedetection.dart';
-import 'package:ar_flutter_plugin_plus/datatypes/node_types.dart';
-import 'package:ar_flutter_plugin_plus/managers/ar_anchor_manager.dart';
-import 'package:ar_flutter_plugin_plus/managers/ar_location_manager.dart';
-import 'package:ar_flutter_plugin_plus/managers/ar_object_manager.dart';
-import 'package:ar_flutter_plugin_plus/managers/ar_session_manager.dart';
-import 'package:ar_flutter_plugin_plus/models/ar_anchor.dart';
-import 'package:ar_flutter_plugin_plus/models/ar_node.dart';
-import 'package:ar_flutter_plugin_plus/widgets/ar_view.dart';
+import 'package:ar_flutter_holi/datatypes/config_planedetection.dart';
+import 'package:ar_flutter_holi/datatypes/node_types.dart';
+import 'package:ar_flutter_holi/managers/ar_anchor_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_location_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_object_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_session_manager.dart';
+import 'package:ar_flutter_holi/models/ar_anchor.dart';
+import 'package:ar_flutter_holi/models/ar_node.dart';
+import 'package:ar_flutter_holi/widgets/ar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 

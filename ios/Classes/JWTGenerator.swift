@@ -1,6 +1,6 @@
 //
 //  JWTGenerator.swift
-//  ar_flutter_plugin_plus
+//  ar_flutter_holi
 //
 //  Created by Franz Graaf on 02.11.25.
 //

@@ -1,15 +1,15 @@
-export 'package:ar_flutter_plugin_plus/widgets/ar_view.dart';
+export 'package:ar_flutter_holi/widgets/ar_view.dart';
 
 import 'dart:async';
 
 import 'package:flutter/services.dart';
 
-class ArFlutterPluginPlus {
+class ArFlutterHoliPlus {
   static const MethodChannel _channel =
-      const MethodChannel('ar_flutter_plugin_plus');
+      const MethodChannel('ar_flutter_holi_plus');
 
   /// Private constructor to prevent accidental instantiation of the Plugin using the implicit default constructor
-  ArFlutterPluginPlus._();
+  ArFlutterHoliPlus._();
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');

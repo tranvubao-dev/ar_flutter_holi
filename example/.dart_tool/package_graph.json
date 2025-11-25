@@ -1,13 +1,13 @@
 {
   "roots": [
-    "ar_flutter_plugin_plus_example"
+    "ar_flutter_holi_example"
   ],
   "packages": [
     {
-      "name": "ar_flutter_plugin_plus_example",
+      "name": "ar_flutter_holi_example",
       "version": "0.0.0",
       "dependencies": [
-        "ar_flutter_plugin_plus",
+        "ar_flutter_holi",
         "cloud_firestore",
         "cupertino_icons",
         "firebase_core",
@@ -95,8 +95,8 @@
       "dependencies": []
     },
     {
-      "name": "ar_flutter_plugin_plus",
-      "version": "0.0.1",
+      "name": "ar_flutter_holi",
+      "version": "1.0.1",
       "dependencies": [
         "flutter",
         "geolocator",

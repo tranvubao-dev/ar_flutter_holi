@@ -1,17 +1,13 @@
 // The code in this file is adapted from Oleksandr Leuschenko' ARKit Flutter Plugin (https://github.com/olexale/arkit_flutter_plugin)
 
-import 'package:ar_flutter_plugin_plus/datatypes/hittest_result_types.dart';
-import 'package:ar_flutter_plugin_plus/utils/json_converters.dart';
+import 'package:ar_flutter_holi/datatypes/hittest_result_types.dart';
+import 'package:ar_flutter_holi/utils/json_converters.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 /// A result (type, distance from the camera, world transformation) of an intersection found during a hit-test.
 class ARHitTestResult {
-  ARHitTestResult(
-    this.type,
-    this.distance,
-    this.worldTransform,
-  );
+  ARHitTestResult(this.type, this.distance, this.worldTransform);
 
   /// The type of the hit-test result.
   final ARHitTestResultType type;
@@ -51,10 +47,14 @@ Map<String, dynamic> _$ARHitTestResultToJson(ARHitTestResult instance) {
   }
 
   writeNotNull(
-      'type', const ARHitTestResultTypeConverter().toJson(instance.type));
+    'type',
+    const ARHitTestResultTypeConverter().toJson(instance.type),
+  );
   val['distance'] = instance.distance;
-  writeNotNull('worldTransform',
-      const MatrixConverter().toJson(instance.worldTransform));
+  writeNotNull(
+    'worldTransform',
+    const MatrixConverter().toJson(instance.worldTransform),
+  );
   return val;
 }
 

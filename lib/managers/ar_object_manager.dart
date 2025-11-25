@@ -1,6 +1,6 @@
-import 'package:ar_flutter_plugin_plus/models/ar_anchor.dart';
-import 'package:ar_flutter_plugin_plus/models/ar_node.dart';
-import 'package:ar_flutter_plugin_plus/utils/json_converters.dart';
+import 'package:ar_flutter_holi/models/ar_anchor.dart';
+import 'package:ar_flutter_holi/models/ar_node.dart';
+import 'package:ar_flutter_holi/utils/json_converters.dart';
 import 'package:flutter/services.dart';
 
 // Type definitions to enforce a consistent use of the API
@@ -49,9 +49,9 @@ class ARObjectManager {
         case 'onNodeTap':
           if (onNodeTap != null) {
             final tappedNodes = call.arguments as List<dynamic>;
-            onNodeTap!(tappedNodes
-                .map((tappedNode) => tappedNode.toString())
-                .toList());
+            onNodeTap!(
+              tappedNodes.map((tappedNode) => tappedNode.toString()).toList(),
+            );
           }
           break;
         case 'onPanStart':
@@ -71,8 +71,9 @@ class ARObjectManager {
         case 'onPanEnd':
           if (onPanEnd != null) {
             final tappedNodeName = call.arguments["name"] as String;
-            final transform =
-                MatrixConverter().fromJson(call.arguments['transform'] as List);
+            final transform = MatrixConverter().fromJson(
+              call.arguments['transform'] as List,
+            );
 
             // Notify callback
             onPanEnd!(tappedNodeName, transform);
@@ -93,8 +94,9 @@ class ARObjectManager {
         case 'onRotationEnd':
           if (onRotationEnd != null) {
             final tappedNodeName = call.arguments["name"] as String;
-            final transform =
-                MatrixConverter().fromJson(call.arguments['transform'] as List);
+            final transform = MatrixConverter().fromJson(
+              call.arguments['transform'] as List,
+            );
 
             // Notify callback
             onRotationEnd!(tappedNodeName, transform);
@@ -122,14 +124,17 @@ class ARObjectManager {
       node.transformNotifier.addListener(() {
         _channel.invokeMethod<void>('transformationChanged', {
           'name': node.name,
-          'transformation':
-              MatrixValueNotifierConverter().toJson(node.transformNotifier)
+          'transformation': MatrixValueNotifierConverter().toJson(
+            node.transformNotifier,
+          ),
         });
       });
       if (planeAnchor != null) {
         planeAnchor.childNodes.add(node.name);
-        return await _channel.invokeMethod<bool>('addNodeToPlaneAnchor',
-            {'node': node.toMap(), 'anchor': planeAnchor.toJson()});
+        return await _channel.invokeMethod<bool>('addNodeToPlaneAnchor', {
+          'node': node.toMap(),
+          'anchor': planeAnchor.toJson(),
+        });
       } else {
         return await _channel.invokeMethod<bool>('addNode', node.toMap());
       }

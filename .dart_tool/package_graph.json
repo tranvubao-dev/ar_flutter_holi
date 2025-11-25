@@ -1,11 +1,11 @@
 {
   "roots": [
-    "ar_flutter_plugin_plus"
+    "ar_flutter_holi"
   ],
   "packages": [
     {
-      "name": "ar_flutter_plugin_plus",
-      "version": "1.0.1",
+      "name": "ar_flutter_holi",
+      "version": "0.0.1",
       "dependencies": [
         "flutter",
         "geolocator",

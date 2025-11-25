@@ -1,14 +1,11 @@
-import 'package:ar_flutter_plugin_plus/datatypes/anchor_types.dart';
-import 'package:ar_flutter_plugin_plus/utils/json_converters.dart';
+import 'package:ar_flutter_holi/datatypes/anchor_types.dart';
+import 'package:ar_flutter_holi/utils/json_converters.dart';
 import 'package:flutter/widgets.dart';
 
 /// Object attached to a tracked physical entity of the AR environment (can be initialized with a world transformation)
 abstract class ARAnchor {
-  ARAnchor({
-    required this.type,
-    required this.transformation,
-    String? name,
-  }) : name = name ?? UniqueKey().toString();
+  ARAnchor({required this.type, required this.transformation, String? name})
+    : name = name ?? UniqueKey().toString();
 
   /// Specifies the [AnchorType] of this [ARAnchor]
   final AnchorType type;
@@ -42,11 +39,14 @@ class ARPlaneAnchor extends ARAnchor {
     List<String>? childNodes,
     String? cloudanchorid,
     int? ttl,
-  })  : childNodes = childNodes ?? [],
-        cloudanchorid = cloudanchorid ?? null,
-        ttl = ttl ?? 1,
-        super(
-            type: AnchorType.plane, transformation: transformation, name: name);
+  }) : childNodes = childNodes ?? [],
+       cloudanchorid = cloudanchorid ?? null,
+       ttl = ttl ?? 1,
+       super(
+         type: AnchorType.plane,
+         transformation: transformation,
+         name: name,
+       );
 
   /// Names of ARNodes attached to this [APlaneRAnchor]
   List<String> childNodes;
@@ -67,8 +67,9 @@ class ARPlaneAnchor extends ARAnchor {
 /// Constructs an [ARPlaneAnchor] from a serialized PlaneAnchor object
 ARPlaneAnchor aRPlaneAnchorFromJson(Map<String, dynamic> json) {
   return ARPlaneAnchor(
-    transformation:
-        const MatrixConverter().fromJson(json['transformation'] as List),
+    transformation: const MatrixConverter().fromJson(
+      json['transformation'] as List,
+    ),
     name: json['name'] as String,
     childNodes: json['childNodes']
         ?.map((child) => child.toString())
@@ -93,9 +94,11 @@ Map<String, dynamic> aRPlaneAnchorToJson(ARPlaneAnchor instance) {
 
 /// An [ARAnchor] type that is not supported yet
 class ARUnkownAnchor extends ARAnchor {
-  ARUnkownAnchor(
-      {required AnchorType type, required Matrix4 transformation, String? name})
-      : super(type: type, transformation: transformation, name: name);
+  ARUnkownAnchor({
+    required AnchorType type,
+    required Matrix4 transformation,
+    String? name,
+  }) : super(type: type, transformation: transformation, name: name);
 
   static ARUnkownAnchor fromJson(Map<String, dynamic> json) =>
       aRUnkownAnchorFromJson(json);
@@ -107,8 +110,9 @@ class ARUnkownAnchor extends ARAnchor {
 ARUnkownAnchor aRUnkownAnchorFromJson(Map<String, dynamic> json) {
   return ARUnkownAnchor(
     type: json['type'],
-    transformation:
-        const MatrixConverter().fromJson(json['transformation'] as List),
+    transformation: const MatrixConverter().fromJson(
+      json['transformation'] as List,
+    ),
     name: json['name'] as String,
   );
 }
