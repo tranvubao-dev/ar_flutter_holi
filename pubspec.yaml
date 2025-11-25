@@ -29,6 +29,6 @@ flutter:
     platforms:
       android:
         package: tech.graaf.franz.ar_flutter_holi
-        pluginClass: ArFlutterPluginPlus
+        pluginClass: ArFlutterHoliPlus
       ios:
-        pluginClass: ArFlutterPluginPlus
+        pluginClass: ArFlutterHoliPlus
