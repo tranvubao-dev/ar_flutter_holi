@@ -11,3 +11,7 @@
 ## 0.0.3
  
 - Update android plugin 
+
+## 0.0.4
+
+- Fix iOS podspec issues
