@@ -96,7 +96,7 @@
     },
     {
       "name": "ar_flutter_holi",
-      "version": "0.0.3",
+      "version": "0.0.4",
       "dependencies": [
         "flutter",
         "geolocator",

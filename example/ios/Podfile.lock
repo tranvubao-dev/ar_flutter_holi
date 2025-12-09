@@ -1188,7 +1188,7 @@ PODS:
     - abseil/meta/type_traits
     - abseil/xcprivacy
   - abseil/xcprivacy (1.20240722.0)
-  - ar_flutter_holi (0.0.3):
+  - ar_flutter_holi (0.0.4):
     - ARCore/CloudAnchors (~> 1.51.0)
     - Flutter
     - GLTFSceneKit
@@ -1484,7 +1484,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: a05cc83bf02079535e17169a73c5be5ba47f714b
-  ar_flutter_holi: 02eb2f0b2a2f176439b47b9792d611a844776887
+  ar_flutter_holi: fe5e7a985dd2c3c53de4cc487541d9c17bf4b830
   ARCore: 510a91dbad2b4c26dca7073a1dc61a2b25a3392d
   BlueCryptor: b0aee3d9b8f367b49b30de11cda90e1735571c24
   BlueECC: 0d18e93347d3ec6d41416de21c1ffa4d4cd3c2cc
