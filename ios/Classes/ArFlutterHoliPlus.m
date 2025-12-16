@@ -10,6 +10,6 @@
 
 @implementation ArFlutterHoliPlus
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftArFlutterPluginPlus registerWithRegistrar:registrar];
+  [FlutterViewerUsdzPlugin registerWithRegistrar:registrar];
 }
 @end

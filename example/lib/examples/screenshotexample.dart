@@ -1,17 +1,22 @@
-import 'package:ar_flutter_holi/managers/ar_location_manager.dart';
+import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:ar_flutter_holi/managers/ar_session_manager.dart';
+import 'package:ar_flutter_holi/managers/ar_location_manager.dart';
 import 'package:ar_flutter_holi/managers/ar_object_manager.dart';
 import 'package:ar_flutter_holi/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_holi/models/ar_anchor.dart';
-import 'package:ar_flutter_holi/widgets/ar_view.dart';
 import 'package:ar_flutter_holi_example/gloabl_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:ar_flutter_holi/ar_flutter_holi_plus.dart';
 import 'package:ar_flutter_holi/datatypes/config_planedetection.dart';
 import 'package:ar_flutter_holi/datatypes/node_types.dart';
-import 'package:ar_flutter_holi/datatypes/hittest_result_types.dart';
 import 'package:ar_flutter_holi/models/ar_node.dart';
 import 'package:ar_flutter_holi/models/ar_hittest_result.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:http/http.dart' as http;
+import 'package:vector_math/vector_math_64.dart' hide Colors;
+import 'package:path_provider/path_provider.dart';
 
 class ScreenshotWidget extends StatefulWidget {
   const ScreenshotWidget({Key? key}) : super(key: key);
@@ -28,6 +33,18 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
   List<ARAnchor> anchors = [];
 
   double currentScale = 0.5;
+  double initialScale = 1.0;
+  late Uint8List glbBytes;
+  late String localGlbPath;
+  bool isLoadingModel = false;
+  File? _localGlbFile;
+  ARNode? previewNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _preloadModelToFile();
+  }
 
   @override
   void dispose() {
@@ -35,12 +52,34 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
     super.dispose();
   }
 
+  Future<void> _preloadModelToFile() async {
+    setState(() => isLoadingModel = true);
+    try {
+      final uri = Uri.parse(GlobalVariables.arObjectUrl1);
+      final response = await http.get(uri);
+      if (response.statusCode != 200) {
+        throw Exception('Failed to download model: ${response.statusCode}');
+      }
+
+      final bytes = response.bodyBytes;
+
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/preloaded_model.glb';
+      final file = File(filePath);
+      await file.writeAsBytes(bytes, flush: true);
+
+      _localGlbFile = file;
+    } catch (e) {
+      debugPrint('Preload model failed: $e');
+    } finally {
+      if (mounted) setState(() => isLoadingModel = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('DEMO AR'),
-      ),
+      appBar: AppBar(title: const Text('DEMO AR')),
       body: SafeArea(
         child: Stack(
           children: [
@@ -48,43 +87,7 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
               onARViewCreated: onARViewCreated,
               planeDetectionConfig: PlaneDetectionConfig.horizontalAndVertical,
             ),
-
-            // ⭐ BUTTON TĂNG GIẢM SIZE ⭐
-            Positioned(
-              right: 20,
-              bottom: 140,
-              child: Column(
-                children: [
-                  FloatingActionButton(
-                    heroTag: "btn_plus",
-                    onPressed: increaseSize,
-                    child: const Icon(Icons.add),
-                  ),
-                  const SizedBox(height: 12),
-                  FloatingActionButton(
-                    heroTag: "btn_minus",
-                    onPressed: decreaseSize,
-                    child: const Icon(Icons.remove),
-                  ),
-                ],
-              ),
-            ),
-
-            // Nút remove + screenshot
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                      onPressed: onRemoveEverything,
-                      child: const Text("Remove Everything")),
-                  ElevatedButton(
-                      onPressed: onTakeScreenshot,
-                      child: const Text("Take Screenshot")),
-                ],
-              ),
-            )
+            if (arObjectManager != null) arObjectManager!.buildGestureLayer(),
           ],
         ),
       ),
@@ -92,10 +95,11 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
   }
 
   void onARViewCreated(
-      ARSessionManager arSessionManager,
-      ARObjectManager arObjectManager,
-      ARAnchorManager arAnchorManager,
-      ARLocationManager arLocationManager) {
+    ARSessionManager arSessionManager,
+    ARObjectManager arObjectManager,
+    ARAnchorManager arAnchorManager,
+    ARLocationManager arLocationManager,
+  ) {
     this.arSessionManager = arSessionManager;
     this.arObjectManager = arObjectManager;
     this.arAnchorManager = arAnchorManager;
@@ -105,8 +109,8 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
           showPlanes: false,
           customPlaneTexturePath: '',
           showWorldOrigin: false,
+          handleTaps: true,
         );
-    this.arObjectManager!.onInitialize();
 
     this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
     this.arObjectManager!.onNodeTap = onNodeTapped;
@@ -120,75 +124,38 @@ class _ScreenshotWidgetState extends State<ScreenshotWidget> {
     nodes.clear();
   }
 
-  Future<void> onTakeScreenshot() async {
-    var image = await arSessionManager!.snapshot();
-    await showDialog(
-        context: context,
-        builder: (_) => Dialog(
-              child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(image: image, fit: BoxFit.cover)),
-              ),
-            ));
-  }
-
   Future<void> onNodeTapped(List<String> nodes) async {
     arSessionManager!.onError("Tapped ${nodes.length} node(s)");
   }
 
-  // ⭐ KHI TAP VÀO PLANE
   Future<void> onPlaneOrPointTapped(
-      List<ARHitTestResult> hitTestResults) async {
-    var singleHitTestResult = hitTestResults.firstWhere(
-        (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
+    List<ARHitTestResult> hitTestResults,
+  ) async {
+    if (nodes.isNotEmpty) return;
 
-    var newAnchor =
-        ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
-    bool? didAddAnchor = await arAnchorManager!.addAnchor(newAnchor);
-
-    if (didAddAnchor == true) {
-      anchors.add(newAnchor);
-
-      var newNode = ARNode(
-        type: NodeType.webGLB,
-        uri: GlobalVariables.arObjectUrl1,
-        scale: Vector3(currentScale, currentScale, currentScale),
-        position: Vector3(0.5, 0.5, 0.5),
-        rotation: Vector4(1.0, 0.0, 0.0, 0.0),
-      );
-
-      bool? didAddNode =
-          await arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
-
-      if (didAddNode == true) {
-        nodes.add(newNode);
-      }
+    // Xóa preview
+    if (previewNode != null) {
+      await arObjectManager!.removeNode(previewNode!);
+      previewNode = null;
     }
-  }
 
-  // 🔥 TĂNG SIZE
-  void increaseSize() {
-    if (nodes.isEmpty) return;
+    final hit = hitTestResults.first;
+    var anchor = ARPlaneAnchor(transformation: hit.worldTransform);
 
-    currentScale += 1;
-    final node = nodes.last;
+    if (await arAnchorManager!.addAnchor(anchor) != true) return;
+    anchors.add(anchor);
 
-    node.scale = Vector3(currentScale, currentScale, currentScale);
-    arObjectManager!.updateNode(node);
-    setState(() {});
-  }
+    var realNode = ARNode(
+      type: NodeType.webGLB,
+      uri: _localGlbFile!.path,
+      scale: Vector3(currentScale, currentScale, currentScale),
+      position: Vector3(0.0, 0.0, 0.0),
+      rotation: Vector4(0, 1, 0, 0),
+    );
 
-  // 🔥 GIẢM SIZE
-  void decreaseSize() {
-    if (nodes.isEmpty) return;
-
-    currentScale -= 1;
-    if (currentScale < 1) currentScale = 1;
-
-    final node = nodes.last;
-
-    node.scale = Vector3(currentScale, currentScale, currentScale);
-    arObjectManager!.updateNode(node);
-    setState(() {});
+    if (await arObjectManager!.addNode(realNode, planeAnchor: anchor) == true) {
+      nodes.add(realNode);
+      arObjectManager!.setActiveNode(realNode);
+    }
   }
 }

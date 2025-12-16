@@ -15,4 +15,12 @@ class ArFlutterHoliPlus {
     final String version = await _channel.invokeMethod('getPlatformVersion');
     return version;
   }
+
+  static Future<bool> loadUSDZFileFromUrl(String url) async {
+    final result = await _channel.invokeMethod('loadUSDZFile', {
+      'path': url,
+      'isUrl': true,
+    });
+    return result == true;
+  }
 }

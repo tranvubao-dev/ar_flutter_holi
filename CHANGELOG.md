@@ -19,3 +19,5 @@
 ## 0.0.5
 
 - Fix iOS podspec issues
+
+## 0.0.6

@@ -1,7 +1,10 @@
 import 'package:ar_flutter_holi/models/ar_anchor.dart';
 import 'package:ar_flutter_holi/models/ar_node.dart';
 import 'package:ar_flutter_holi/utils/json_converters.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vector_math/vector_math_64.dart' as VectorMath;
 
 // Type definitions to enforce a consistent use of the API
 typedef NodeTapResultHandler = void Function(List<String> nodes);
@@ -29,12 +32,42 @@ class ARObjectManager {
   NodeRotationChangeHandler? onRotationChange;
   NodeRotationEndHandler? onRotationEnd;
 
-  ARObjectManager(int id, {this.debug = false}) {
+  final ARGestureConfig gestureConfig;
+
+  double _currentScale = 1.0;
+  double _initialScale = 1.0;
+  double _rotationX = 0.0;
+  double _rotationY = 0.0;
+  Offset? _lastDragPosition;
+  ARNode? _activeNode;
+
+  ARObjectManager(
+    int id, {
+    this.debug = false,
+    this.gestureConfig = const ARGestureConfig(),
+  }) {
     _channel = MethodChannel('arobjects_$id');
     _channel.setMethodCallHandler(_platformCallHandler);
     if (debug) {
       print("ARObjectManager initialized");
     }
+  }
+
+  Widget buildGestureLayer() {
+    return Positioned.fill(
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onScaleStart: onScaleStart,
+        onScaleUpdate: onScaleUpdate,
+      ),
+    );
+  }
+
+  void setActiveNode(ARNode node) {
+    _activeNode = node;
+    _currentScale = node.scale.x;
+    _rotationX = 0;
+    _rotationY = 0;
   }
 
   Future<void> _platformCallHandler(MethodCall call) {
@@ -157,4 +190,62 @@ class ARObjectManager {
       return false;
     }
   }
+
+  void onScaleStart(ScaleStartDetails details) {
+    if (_activeNode == null) return;
+
+    _initialScale = _currentScale;
+    _lastDragPosition = details.focalPoint;
+  }
+
+  void onScaleUpdate(ScaleUpdateDetails details) {
+    if (_activeNode == null) return;
+
+    final node = _activeNode!;
+
+    // SCALE
+    if (gestureConfig.enableScale) {
+      _currentScale = (_initialScale * details.scale).clamp(0.2, 40.0);
+    }
+
+    // ROTATE
+    if (gestureConfig.enableRotation && _lastDragPosition != null) {
+      final dx = details.focalPoint.dx - _lastDragPosition!.dx;
+      final dy = details.focalPoint.dy - _lastDragPosition!.dy;
+      _lastDragPosition = details.focalPoint;
+
+      const sensitivity = 0.01;
+      _rotationY += dx * sensitivity;
+      _rotationX += dy * sensitivity;
+    }
+
+    final qX = VectorMath.Quaternion.axisAngle(
+      VectorMath.Vector3(1, 0, 0),
+      _rotationX,
+    );
+    final qY = VectorMath.Quaternion.axisAngle(
+      VectorMath.Vector3(0, 1, 0),
+      _rotationY,
+    );
+
+    final q = qY * qX;
+
+    node.transform = VectorMath.Matrix4.compose(
+      node.position,
+      q,
+      VectorMath.Vector3(_currentScale, _currentScale, _currentScale),
+    );
+
+    updateNode(node);
+  }
+}
+
+class ARGestureConfig {
+  final bool enableScale;
+  final bool enableRotation;
+
+  const ARGestureConfig({
+    this.enableScale = true,
+    this.enableRotation = true,
+  });
 }

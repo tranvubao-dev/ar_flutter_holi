@@ -1,16 +1,10 @@
-import 'package:ar_flutter_holi/ar_flutter_holi.dart';
+import 'dart:io';
 import 'package:ar_flutter_holi/ar_flutter_holi_plus.dart';
-import 'package:ar_flutter_holi_example/examples/externalmodelmanagementexample.dart';
-import 'package:ar_flutter_holi_example/examples/image_marker_tracking.dart';
-import 'package:ar_flutter_holi_example/examples/objectgesturesexample.dart';
-import 'package:ar_flutter_holi_example/examples/objectsonplanesexample.dart';
+import 'package:ar_flutter_holi/flutter_viewer_usdz.dart';
 import 'package:ar_flutter_holi_example/examples/screenshotexample.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'package:ar_flutter_holi_example/examples/cloudanchorexample.dart';
-import 'package:ar_flutter_holi_example/examples/localandwebobjectsexample.dart';
-import 'package:ar_flutter_holi_example/examples/debugoptionsexample.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +17,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _platformVersion = 'HOLI';
   static const String _title = 'AR Plugin Demo';
 
   @override
@@ -77,58 +71,37 @@ class ExampleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final examples = [
-      // Example(
-      //     'Debug Options',
-      //     'Visualize feature points, planes and world coordinate system',
-      //     () => Navigator.push(context,
-      //         MaterialPageRoute(builder: (context) => DebugOptionsWidget()))),
-      // Example(
-      //     'Local & Online Objects',
-      //     'Place 3D objects from Flutter assets and the web into the scene',
-      //     () => Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (context) => LocalAndWebObjectsWidget()))),
-      // Example(
-      //     'Anchors & Objects on Planes',
-      //     'Place 3D objects on detected planes using anchors',
-      //     () => Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (context) => ObjectsOnPlanesWidget()))),
-      // Example(
-      //     'Object Transformation Gestures',
-      //     'Rotate and Pan Objects',
-      //     () => Navigator.push(context,
-      //         MaterialPageRoute(builder: (context) => ObjectGesturesWidget()))),
-      Example(
-          'Screenshots',
-          'Place 3D objects on planes and take screenshots',
-          () => Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ScreenshotWidget()))),
-      // Example(
-      //     'Cloud Anchors',
-      //     'Place and retrieve 3D objects using the Google Cloud Anchor API',
-      //     () => Navigator.push(context,
-      //         MaterialPageRoute(builder: (context) => CloudAnchorWidget()))),
-      // Example(
-      //     'External Model Management',
-      //     'Similar to Cloud Anchors example, but uses external database to choose from available 3D models',
-      //     () => Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (context) => ExternalModelManagementWidget()))),
-      // Example(
-      //     'Image Marker Tracking',
-      //     'Place 3D objects on image markers',
-      //     () => Navigator.push(context,
-      //         MaterialPageRoute(builder: (context) => ImageMarkerTracking()))),
-    ];
+    final examples = Platform.isAndroid
+        ? [
+            Example(
+                'android GLB',
+                'Place 3D objects on planes',
+                () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ScreenshotWidget()))),
+          ]
+        : [
+            Example(
+              'iOS USDZ',
+              'Place 3D objects on planes',
+              () async {
+                await openARModel();
+              },
+            ),
+          ];
     return ListView(
       children:
           examples.map((example) => ExampleCard(example: example)).toList(),
     );
+  }
+
+  Future<void> openARModel() async {
+    const url = "https://s3.holitech.cloud/evtripar/carar.usdz";
+    final success = await ArFlutterHoliPlus.loadUSDZFileFromUrl(url);
+    if (!success) {
+      print("❌ Không thể mở USDZ");
+    }
   }
 }
 
