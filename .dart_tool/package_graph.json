@@ -11,6 +11,7 @@
         "geolocator",
         "json_annotation",
         "permission_handler",
+        "plugin_platform_interface",
         "vector_math"
       ],
       "devDependencies": [
@@ -33,6 +34,13 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
       ]
     },
     {
@@ -399,13 +407,6 @@
       "dependencies": [
         "crypto",
         "fixnum",
-        "meta"
-      ]
-    },
-    {
-      "name": "plugin_platform_interface",
-      "version": "2.1.8",
-      "dependencies": [
         "meta"
       ]
     },
