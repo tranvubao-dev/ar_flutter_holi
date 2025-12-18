@@ -1,3 +1,4 @@
+import 'package:ar_flutter_holi/managers/ar_session_manager.dart';
 import 'package:ar_flutter_holi/models/ar_anchor.dart';
 import 'package:ar_flutter_holi/models/ar_node.dart';
 import 'package:ar_flutter_holi/utils/json_converters.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:vector_math/vector_math_64.dart' as VectorMath;
+import 'package:vector_math/vector_math_64.dart';
 
 // Type definitions to enforce a consistent use of the API
 typedef NodeTapResultHandler = void Function(List<String> nodes);
@@ -40,6 +42,10 @@ class ARObjectManager {
   double _rotationY = 0.0;
   Offset? _lastDragPosition;
   ARNode? _activeNode;
+  Quaternion _currentRotation = Quaternion.identity();
+  bool _isMoving = false;
+  ARSessionManager? session;
+  Offset? _lastMovePosition;
 
   ARObjectManager(
     int id, {
@@ -59,8 +65,41 @@ class ARObjectManager {
         behavior: HitTestBehavior.translucent,
         onScaleStart: onScaleStart,
         onScaleUpdate: onScaleUpdate,
+        onLongPressStart: _onMoveStart,
+        onLongPressMoveUpdate: _onMoveUpdate,
+        onLongPressEnd: _onMoveEnd,
       ),
     );
+  }
+
+  void _onMoveStart(LongPressStartDetails details) {
+    if (_activeNode == null) return;
+    _isMoving = true;
+  }
+
+  void _onMoveEnd(LongPressEndDetails details) {
+    _isMoving = false;
+    _lastMovePosition = null;
+  }
+
+  void _onMoveUpdate(LongPressMoveUpdateDetails details) {
+    if (_activeNode == null || !_isMoving) return;
+
+    if (_lastMovePosition == null) {
+      _lastMovePosition = details.globalPosition;
+      return;
+    }
+
+    final Offset delta = details.globalPosition - _lastMovePosition!;
+    _lastMovePosition = details.globalPosition;
+    const double moveFactor = 0.001;
+    final Vector3 translation = Vector3(
+      delta.dx * moveFactor,
+      -delta.dy * moveFactor,
+      0,
+    );
+
+    _activeNode!.position += translation;
   }
 
   void setActiveNode(ARNode node) {
@@ -198,6 +237,48 @@ class ARObjectManager {
     _lastDragPosition = details.focalPoint;
   }
 
+//   void onScaleUpdate(ScaleUpdateDetails details) {
+//     if (_activeNode == null) return;
+
+//     final node = _activeNode!;
+
+//     // SCALE
+//     if (gestureConfig.enableScale) {
+//       _currentScale = (_initialScale * details.scale).clamp(0.2, 40.0);
+//     }
+
+//     // ROTATE
+//     if (gestureConfig.enableRotation && _lastDragPosition != null) {
+//       final dx = details.focalPoint.dx - _lastDragPosition!.dx;
+//       final dy = details.focalPoint.dy - _lastDragPosition!.dy;
+//       _lastDragPosition = details.focalPoint;
+
+//       const sensitivity = 0.01;
+//       _rotationY += dx * sensitivity;
+//       _rotationX += dy * sensitivity;
+//     }
+
+//     final qX = VectorMath.Quaternion.axisAngle(
+//       VectorMath.Vector3(1, 0, 0),
+//       _rotationX,
+//     );
+//     final qY = VectorMath.Quaternion.axisAngle(
+//       VectorMath.Vector3(0, 1, 0),
+//       _rotationY,
+//     );
+
+//     final q = qY * qX;
+
+//     node.transform = VectorMath.Matrix4.compose(
+//       node.position,
+//       q,
+//       VectorMath.Vector3(_currentScale, _currentScale, _currentScale),
+//     );
+
+//     updateNode(node);
+//   }
+// }
+
   void onScaleUpdate(ScaleUpdateDetails details) {
     if (_activeNode == null) return;
 
@@ -208,32 +289,31 @@ class ARObjectManager {
       _currentScale = (_initialScale * details.scale).clamp(0.2, 40.0);
     }
 
-    // ROTATE
+    // ROTATE – CHỈ TRỤC Y
     if (gestureConfig.enableRotation && _lastDragPosition != null) {
       final dx = details.focalPoint.dx - _lastDragPosition!.dx;
-      final dy = details.focalPoint.dy - _lastDragPosition!.dy;
       _lastDragPosition = details.focalPoint;
 
       const sensitivity = 0.01;
-      _rotationY += dx * sensitivity;
-      _rotationX += dy * sensitivity;
+
+      final deltaRotation = Quaternion.axisAngle(
+        Vector3(0, 1, 0),
+        dx * sensitivity,
+      );
+
+      // 👇 TÍCH LŨY rotation
+      _currentRotation = deltaRotation * _currentRotation;
+      _currentRotation.normalize();
     }
 
-    final qX = VectorMath.Quaternion.axisAngle(
-      VectorMath.Vector3(1, 0, 0),
-      _rotationX,
-    );
-    final qY = VectorMath.Quaternion.axisAngle(
-      VectorMath.Vector3(0, 1, 0),
-      _rotationY,
-    );
-
-    final q = qY * qX;
-
-    node.transform = VectorMath.Matrix4.compose(
+    node.transform = Matrix4.compose(
       node.position,
-      q,
-      VectorMath.Vector3(_currentScale, _currentScale, _currentScale),
+      _currentRotation,
+      Vector3(
+        _currentScale,
+        _currentScale,
+        _currentScale,
+      ),
     );
 
     updateNode(node);

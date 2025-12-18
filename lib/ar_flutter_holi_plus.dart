@@ -1,4 +1,5 @@
 export 'package:ar_flutter_holi/widgets/ar_view.dart';
+export 'controllers/ar_auto_controller.dart';
 
 import 'dart:async';
 

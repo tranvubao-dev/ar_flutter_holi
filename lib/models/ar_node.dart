@@ -21,17 +21,17 @@ class ARNode {
     Vector3? eulerAngles,
     Matrix4? transformation,
     Map<String, dynamic>? data,
-  }) : name = name ?? UniqueKey().toString(),
-       transformNotifier = ValueNotifier(
-         createTransformMatrix(
-           transformation,
-           position,
-           scale,
-           rotation,
-           eulerAngles,
-         ),
-       ),
-       data = data ?? null;
+  })  : name = name ?? UniqueKey().toString(),
+        transformNotifier = ValueNotifier(
+          createTransformMatrix(
+            transformation,
+            position,
+            scale,
+            rotation,
+            eulerAngles,
+          ),
+        ),
+        data = data ?? null;
 
   /// Specifies the receiver's [NodeType]
   NodeType type;
@@ -110,12 +110,13 @@ class ARNode {
   static const _matrixValueNotifierConverter = MatrixValueNotifierConverter();
 
   Map<String, dynamic> toMap() => <String, dynamic>{
-    'type': type.index,
-    'uri': uri,
-    'transformation': _matrixValueNotifierConverter.toJson(transformNotifier),
-    'name': name,
-    'data': data,
-  }..removeWhere((String k, dynamic v) => v == null);
+        'type': type.index,
+        'uri': uri,
+        'transformation':
+            _matrixValueNotifierConverter.toJson(transformNotifier),
+        'name': name,
+        'data': data,
+      }..removeWhere((String k, dynamic v) => v == null);
 
   static ARNode fromMap(Map<String, dynamic> map) {
     return ARNode(

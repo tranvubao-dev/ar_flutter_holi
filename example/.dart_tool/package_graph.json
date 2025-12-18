@@ -101,6 +101,7 @@
         "flutter",
         "geolocator",
         "json_annotation",
+        "path_provider",
         "permission_handler",
         "plugin_platform_interface",
         "vector_math"

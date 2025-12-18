@@ -1,7 +1,6 @@
-import 'dart:io';
 import 'package:ar_flutter_holi/ar_flutter_holi_plus.dart';
-import 'package:ar_flutter_holi/flutter_viewer_usdz.dart';
-import 'package:ar_flutter_holi_example/examples/screenshotexample.dart';
+import 'package:ar_flutter_holi/controllers/ar_launcher.dart';
+import 'package:ar_flutter_holi_example/gloabl_variables.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
@@ -36,9 +35,6 @@ class _MyAppState extends State<MyApp> {
       platformVersion = 'Failed to get platform version.';
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
@@ -71,37 +67,38 @@ class ExampleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final examples = Platform.isAndroid
-        ? [
-            Example(
-                'android GLB',
-                'Place 3D objects on planes',
-                () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ScreenshotWidget()))),
-          ]
-        : [
-            Example(
-              'iOS USDZ',
-              'Place 3D objects on planes',
-              () async {
-                await openARModel();
-              },
-            ),
-          ];
+    final examples =
+        // Platform.isAndroid
+        //     ? [
+        //         Example(
+        //             'android GLB',
+        //             'Place 3D objects on planes',
+        //             () => Navigator.push(
+        //                 context,
+        //                 MaterialPageRoute(
+        //                     builder: (context) => ScreenshotWidget()))),
+        //       ]
+        //     :
+        [
+      Example(
+        'iOS USDZ',
+        'Place 3D objects on planes',
+        () async {
+          await openARModel(context);
+        },
+      ),
+    ];
     return ListView(
       children:
           examples.map((example) => ExampleCard(example: example)).toList(),
     );
   }
 
-  Future<void> openARModel() async {
-    const url = "https://s3.holitech.cloud/evtripar/carar.usdz";
-    final success = await ArFlutterHoliPlus.loadUSDZFileFromUrl(url);
-    if (!success) {
-      print("❌ Không thể mở USDZ");
-    }
+  Future<void> openARModel(BuildContext context) async {
+    ARLauncher.open(
+      context: context,
+      modelUrl: GlobalVariables.arObjectUrl1,
+    );
   }
 }
 

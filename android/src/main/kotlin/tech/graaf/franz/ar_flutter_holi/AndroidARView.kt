@@ -100,6 +100,19 @@ internal class AndroidARView(
                         "init" -> {
                             initializeARView(call, result)
                         }
+                        "hitTest" -> {
+                            val x = call.argument<Double>("x")!!.toFloat()
+                            val y = call.argument<Double>("y")!!.toFloat()
+                            val frame = arSceneView.arFrame
+                            val hits = frame?.hitTest(x, y) ?: listOf()
+                            val planeAndPointHits = hits.filter {
+                                it.trackable is Plane || it.trackable is Point
+                            }
+                            val serializedResults = ArrayList<HashMap<String, Any>>(
+                                planeAndPointHits.map { serializeHitResult(it) }
+                            )
+                            result.success(serializedResults)
+                        }
                         "getAnchorPose" -> {
                             val anchorNode = arSceneView.scene.findByName(call.argument("anchorId")) as AnchorNode?
                             if (anchorNode != null) {

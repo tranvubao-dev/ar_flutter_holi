@@ -9,8 +9,8 @@ import 'package:vector_math/vector_math_64.dart';
 
 // Type definitions to enforce a consistent use of the API
 typedef ARHitResultHandler = void Function(List<ARHitTestResult> hits);
-typedef ARImageDetectionResultHandler =
-    void Function(String imageName, Matrix4 transformation);
+typedef ARImageDetectionResultHandler = void Function(
+    String imageName, Matrix4 transformation);
 
 /// Manages the session configuration, parameters and events of an [ARView]
 class ARSessionManager {
@@ -43,6 +43,22 @@ class ARSessionManager {
     if (debug) {
       print("ARSessionManager initialized");
     }
+  }
+
+  Future<List<ARHitTestResult>> hitTest(double x, double y) async {
+    final rawResults = await _channel.invokeMethod<List<dynamic>>(
+      'hitTest',
+      {
+        'x': x,
+        'y': y,
+      },
+    );
+
+    return rawResults!
+        .map((e) => ARHitTestResult.fromJson(
+              Map<String, dynamic>.from(e),
+            ))
+        .toList();
   }
 
   /// Returns the camera pose in Matrix4 format with respect to the world coordinate system of the [ARView]
