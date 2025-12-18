@@ -5,7 +5,6 @@ import 'package:ar_flutter_holi/utils/json_converters.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vector_math/vector_math_64.dart' as VectorMath;
 import 'package:vector_math/vector_math_64.dart';
 
 // Type definitions to enforce a consistent use of the API
