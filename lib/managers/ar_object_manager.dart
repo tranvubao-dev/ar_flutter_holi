@@ -37,8 +37,6 @@ class ARObjectManager {
 
   double _currentScale = 1.0;
   double _initialScale = 1.0;
-  double _rotationX = 0.0;
-  double _rotationY = 0.0;
   Offset? _lastDragPosition;
   ARNode? _activeNode;
   Quaternion _currentRotation = Quaternion.identity();
@@ -104,8 +102,6 @@ class ARObjectManager {
   void setActiveNode(ARNode node) {
     _activeNode = node;
     _currentScale = node.scale.x;
-    _rotationX = 0;
-    _rotationY = 0;
   }
 
   Future<void> _platformCallHandler(MethodCall call) {

@@ -131,6 +131,7 @@
       "dependencies": [
         "flutter",
         "geolocator",
+        "http",
         "json_annotation",
         "path_provider",
         "permission_handler",
