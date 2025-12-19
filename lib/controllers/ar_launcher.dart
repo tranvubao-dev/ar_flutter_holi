@@ -61,7 +61,6 @@ class _ARAndroidPageState extends State<ARAndroidPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AR View')),
       body: Stack(
         children: [
           ARView(

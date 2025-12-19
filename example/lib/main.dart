@@ -67,19 +67,7 @@ class ExampleList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final examples =
-        // Platform.isAndroid
-        //     ? [
-        //         Example(
-        //             'android GLB',
-        //             'Place 3D objects on planes',
-        //             () => Navigator.push(
-        //                 context,
-        //                 MaterialPageRoute(
-        //                     builder: (context) => ScreenshotWidget()))),
-        //       ]
-        //     :
-        [
+    final examples = [
       Example(
         'iOS USDZ',
         'Place 3D objects on planes',
