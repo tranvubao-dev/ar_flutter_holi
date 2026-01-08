@@ -37,6 +37,15 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+    
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = false
+            excludes += setOf(
+                "**/armeabi-v7a/**"
+            )
+        }
+    }
 }
 
 flutter {

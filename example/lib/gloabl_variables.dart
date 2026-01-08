@@ -5,5 +5,5 @@ class GlobalVariables {
   //     "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Duck/glTF-Binary/Duck.glb";
   static String arObjectUrl1 = Platform.isAndroid
       ? "https://s3.holitech.cloud/evtripar/carar.glb"
-      : "https://s3.holitech.cloud/evtripar/carar.usdz";
+      : "https://s3.holitech.cloud/evtripar/thapbanhit.usdz";
 }
